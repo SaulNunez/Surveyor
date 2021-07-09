@@ -1,0 +1,10 @@
+{
+    "title": "Test survey",
+    "description": "Example",
+    "questions": [
+        {
+            "content": "Cual es tu nombre?",
+            "type": "open_question" 
+        }
+    ]
+}

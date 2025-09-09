@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import { BinaryChoiceQuestion, LikertScaleQuestion, MultipleChoiceQuestion, OpenEndedQuestion, Question } from "./questionSchema";
 
 export class Survey {
+  @prop()
+  public _id!: string;
+
   @prop({ required: true })
   public title!: string;
 

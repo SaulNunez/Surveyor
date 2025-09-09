@@ -1,4 +1,4 @@
-import { getDiscriminatorModelForClass, getModelForClass, prop } from "@typegoose/typegoose";
+import { getDiscriminatorModelForClass, getModelForClass, modelOptions, prop } from "@typegoose/typegoose";
 
 export enum QuestionType {
     OPEN_ENDED = 'open-ended',
@@ -7,9 +7,20 @@ export enum QuestionType {
     LIKERT_SCALE = 'likert-scale'
 }
 
+@modelOptions({
+  schemaOptions: {
+    discriminatorKey: 'questionType',
+  },
+})
 export class Question {
+    @prop()
+    public _id!: string;
+
     @prop({ required: true })
     public text!: string;
+
+    @prop({ required: true })
+    public questionType!: string;
 }
 
 export const QuestionModel = getModelForClass(Question);

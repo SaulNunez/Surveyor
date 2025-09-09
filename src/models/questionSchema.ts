@@ -1,31 +1,40 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+import { getDiscriminatorModelForClass, getModelForClass, prop } from "@typegoose/typegoose";
 
-const options = { discriminatorKey: 'type' };
-export const questionSchema = new Schema({
-  text: { type: String, required: true },
-  responses: [{ type: Schema.Types.ObjectId, ref: 'Response' }],
-}, options);
+export enum QuestionType {
+    OPEN_ENDED = 'open-ended',
+    MULTIPLE_CHOICE = 'multiple-choice',
+    BINARY_CHOICE = 'binary-choice',
+    LIKERT_SCALE = 'likert-scale'
+}
 
-const openEndedOptionSchema = new Schema({
-    result: { type: String },
-});
-export const OpenEndedQuestion = questionSchema.discriminator('open-ended', openEndedOptionSchema);
+export class Question {
+    @prop({ required: true })
+    public text!: string;
+}
 
-const multipleChoiceOptionSchema = new Schema({
-    options: [{ type: String }],
-});
-export const MultipleChoiceQuestion = questionSchema.discriminator('multiple-choice', multipleChoiceOptionSchema);
+export const QuestionModel = getModelForClass(Question);
+export class OpenEndedQuestion extends Question {
+}
 
-const binaryChoiceOptionSchema = new Schema({
-    positiveLabel: { type: String },
-    negativeLabel: { type: String },
-});
-export const BinaryChoiceQuestion = questionSchema.discriminator('binary-choice', binaryChoiceOptionSchema);
+export const OpenEndedQuestionModel = getDiscriminatorModelForClass(QuestionModel, OpenEndedQuestion, QuestionType.OPEN_ENDED);
+export class MultipleChoiceQuestion extends Question {
+    @prop({ required: true })
+    public options!: string[];
+}
+export const MultipleChoiceQuestionModel = getDiscriminatorModelForClass(QuestionModel, MultipleChoiceQuestion, QuestionType.MULTIPLE_CHOICE);
+export class BinaryChoiceQuestion extends Question {
+    @prop({ required: true })
+    public positiveLabel!: string;
 
-const likertScaleOptionSchema = new Schema({
-    positiveLabel: { type: String },
-    negativeLabel: { type: String }
-});
-export const LikertScaleQuestion = questionSchema.discriminator('likert-scale', likertScaleOptionSchema);
-
+    @prop({ required: true })
+    public negativeLabel!: string;
+}
+export const BinaryChoiceQuestionModel = getDiscriminatorModelForClass(QuestionModel, BinaryChoiceQuestion, QuestionType.BINARY_CHOICE);
+export class LikertScaleQuestion extends Question {
+    @prop({ required: true })
+    public positiveLabel!: string;
+    
+    @prop({ required: true })
+    public negativeLabel!: string;
+}
+export const LikertScaleQuestionModel = getDiscriminatorModelForClass(QuestionModel, LikertScaleQuestion, QuestionType.LIKERT_SCALE);

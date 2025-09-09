@@ -1,27 +1,35 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+import { getDiscriminatorModelForClass, getModelForClass, prop, Ref } from "@typegoose/typegoose";
+import { Question, QuestionType } from "./questionSchema";
+import { Attempt } from "./attemptSchema";
 
-const responseSchema = new Schema({
-  question: { type: Schema.Types.ObjectId, ref: 'Question', required: true },
-  attempt: { type: Schema.Types.ObjectId, ref: 'Attempt', required: true },
-}, {discriminatorKey: 'type'});
+class Response {
+    @prop({ ref: () => Question, required: true })
+    question!: Ref<Question>
+}
 
-const openEndedResponse = new Schema({
-    result: { type: String },
-});
-export const OpenEndedResponse = responseSchema.discriminator('open-ended', openEndedResponse);
+export const ResponseModel = getModelForClass(Response);
 
-const multipleChoiseResponseSchema = new Schema({
-    selectedOption: { type: Number, required: true },
-});
-export const MultipleChoiceResponse = responseSchema.discriminator('multiple-choice', multipleChoiseResponseSchema);
+export class OpenEndedResponse extends Response {
+    @prop({ required: true })
+    response!: string;
+}
 
-const binaryChoiceResponseSchema = new Schema({
-    choice: { type: Boolean, required: true },
-});
-export const BinaryChoiceResponse = responseSchema.discriminator('binary-choice', binaryChoiceResponseSchema);
+export const OpenEndedResponseModel = getDiscriminatorModelForClass(ResponseModel, OpenEndedResponse, QuestionType.OPEN_ENDED);
 
-const likertScaleResponseSchema = new Schema({
-    rating: { type: Number, required: true },
-});
-export const LikertScaleResponse = responseSchema.discriminator('likert-scale', likertScaleResponseSchema);
+export class MultipleChoiceResponse extends Response {
+    @prop({ required: true })
+    selectedOption!: number;
+}
+export const MultipleChoiceResponseModel = getDiscriminatorModelForClass(ResponseModel, MultipleChoiceResponse, QuestionType.MULTIPLE_CHOICE);
+
+export class BinaryChoiceResponse extends Response {
+    @prop({ required: true })
+    choice!: boolean;
+}
+export const BinaryChoiceResponseModel = getDiscriminatorModelForClass(ResponseModel, BinaryChoiceResponse, QuestionType.BINARY_CHOICE);
+
+export class LikertScaleResponse extends Response {
+    @prop({ required: true })
+    rating!: number;
+}
+export const LikertScaleResponseModel = getDiscriminatorModelForClass(ResponseModel, LikertScaleResponse, QuestionType.LIKERT_SCALE);

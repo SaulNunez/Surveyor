@@ -1,8 +1,26 @@
+import { getModelForClass, prop, Ref } from "@typegoose/typegoose";
 import mongoose from "mongoose";
-const { Schema } = mongoose;
+import { BinaryChoiceQuestion, LikertScaleQuestion, MultipleChoiceQuestion, OpenEndedQuestion, Question } from "./questionSchema";
 
-export const surveySchema = new Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
-});
+export class Survey {
+  @prop({ required: true })
+  public title!: string;
+
+  @prop({ required: true })
+  public description!: string;
+
+  @prop({ default: Date.now })
+  public createdAt!: Date;
+
+  @prop({ required: true })
+  public user!: mongoose.Types.ObjectId;
+
+  @prop({ 
+    type: Question,
+        discriminators: () => [
+          OpenEndedQuestion, MultipleChoiceQuestion, BinaryChoiceQuestion, LikertScaleQuestion
+        ]
+   })
+  public questions!: Question[];
+}
+export const SurveyModel = getModelForClass(Survey);

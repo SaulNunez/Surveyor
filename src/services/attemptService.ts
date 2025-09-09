@@ -1,10 +1,12 @@
+import { Attempt, AttemptModel } from "../models/attemptSchema";
 import { InvalidOperationError } from "../models/Errors/invalidOperationError";
 import { NotFoundError } from "../models/Errors/notFoundError";
-import { Attempt } from "../models/models";
 
 async function getLatestAttempt(surveyId: string) {
-    const latestAttempt = await Attempt.find({ survey: surveyId }, 'survey startedAt completedAt').sort({startedAt: 'descending'}).limit(1).exec();
-    return latestAttempt.length ? latestAttempt[0] : null;
+    const latestAttempt = await AttemptModel.find({ survey: surveyId }, 'survey startedAt completedAt').sort({startedAt: 'descending'}).limit(1).exec();
+    if(latestAttempt.length === 0) throw new NotFoundError('No attempt found');
+
+    return latestAttempt[0];
 }
 
 export async function getExistingAttempt(surveyId: string) {
@@ -20,7 +22,7 @@ export async function getExistingAttempt(surveyId: string) {
     
     return { 
         id: existingAttempt._id,
-        survey: existingAttempt.survey._id,
+        survey: existingAttempt.survey,
         startedAt: existingAttempt.startedAt
     };
 }
@@ -36,7 +38,7 @@ export async function createNewAttempt(surveyId: string, userId: string) {
         return;
     }
 
-    const newAttempt = new Attempt({
+    const newAttempt = new AttemptModel({
         survey: surveyId,
         startedAt: new Date(),
         user: userId
@@ -46,13 +48,13 @@ export async function createNewAttempt(surveyId: string, userId: string) {
 
         return { 
         id: newAttempt._id,
-        survey: newAttempt.survey._id,
+        survey: newAttempt.survey,
         startedAt: newAttempt.startedAt
     };
 }
 
 export async function deleteAttempt(attemptId: string, userId: string) {
-    const existingAttempt = await Attempt.findById(attemptId, 'survey startedAt completedAt').exec();
+    const existingAttempt = await AttemptModel.findById(attemptId, 'survey startedAt completedAt').exec();
 
     if(!existingAttempt) {
         throw new NotFoundError('Attempt not found');
@@ -66,14 +68,13 @@ export async function deleteAttempt(attemptId: string, userId: string) {
         throw new NotFoundError('Attempt not found');
     }
 
-    if(existingAttempt) {
-        await Attempt.deleteOne({ _id: attemptId }).exec();
-        return true;
-    }
+    await AttemptModel.deleteOne({ _id: attemptId }).exec();
+    return true;
+    
 }
 
 export async function completeAttempt(attemptId: string) {
-    const existingAttempt = await Attempt.findById(attemptId, 'survey startedAt completedAt').exec();
+    const existingAttempt = await AttemptModel.findById(attemptId, 'survey startedAt completedAt').exec();
 
     if(!existingAttempt) {
         throw new NotFoundError('Attempt not found');
@@ -85,7 +86,7 @@ export async function completeAttempt(attemptId: string) {
     
     return { 
         id: existingAttempt._id,
-        survey: existingAttempt.survey._id,
+        survey: existingAttempt.survey,
         startedAt: existingAttempt.startedAt,
         completedAt: existingAttempt.completedAt
     };

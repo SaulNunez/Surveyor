@@ -1,9 +1,10 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import { getUserResponseToQuestion, modifyResponseToQuestion, uploadResponse } from '../controllers/questionControllers';
 
 const router: Router = Router();
 
-router.get('/question', (req: Request, res: Response) => {
-  res.send('Get all users');
-});
+router.get("/questions/:questionId", getUserResponseToQuestion);
+router.post("/questions", uploadResponse);
+router.put("/questions/:questionId", modifyResponseToQuestion);
 
 export default router;

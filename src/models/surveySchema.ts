@@ -1,4 +1,4 @@
-import { getModelForClass, prop, Ref } from "@typegoose/typegoose";
+import { DocumentType, getModelForClass, prop, Ref } from "@typegoose/typegoose";
 import mongoose from "mongoose";
 import { BinaryChoiceQuestion, LikertScaleQuestion, MultipleChoiceQuestion, OpenEndedQuestion, Question } from "./questionSchema";
 
@@ -24,6 +24,6 @@ export class Survey {
           OpenEndedQuestion, MultipleChoiceQuestion, BinaryChoiceQuestion, LikertScaleQuestion
         ]
    })
-  public questions!: Question[];
+  public questions!: mongoose.Types.DocumentArray<DocumentType<Question>>;
 }
 export const SurveyModel = getModelForClass(Survey);

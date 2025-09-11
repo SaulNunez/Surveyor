@@ -1,8 +1,8 @@
 import express, { Application, Request, Response } from 'express';
 import Options from './swagger'; 
-import userRoutes from './routes/userRoutes';
 import errorHandler from './middlewares/errorHandler';
 import moongose from 'mongoose';
+import surveyRoutes from './routes/surveyRoutes';
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require("swagger-jsdoc");
 
@@ -16,7 +16,7 @@ if(!process.env.MONGO_CONNECTION_STRING) {
 moongose.connect(process.env.MONGO_CONNECTION_STRING);
 
 app.use(express.json());
-app.use('/api', userRoutes);
+app.use('/api', surveyRoutes);
 app.use(errorHandler);
 
 const specs = swaggerJsdoc(Options);

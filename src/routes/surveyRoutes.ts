@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { createSurveyForUser, deleteExistingSurvey, editExistingSurvey, getSurveyDetails } from '../controllers/surveyController';
+import { completeAttempt, createAttempt, deleteAttempt, getAttempt } from '../controllers/attemptController';
+import { getUserResponseToQuestion, modifyResponseToQuestion, uploadResponse } from '../controllers/questionControllers';
 
 const router: Router = Router();
 
@@ -48,5 +50,14 @@ router.delete('/survey/:surveyId', deleteExistingSurvey);
 
 router.get('/survey/:surveyId', getSurveyDetails);
 router.put('/survey/:surveyId', editExistingSurvey)
+
+router.get('/attempt', getAttempt);
+router.post('/attempt', createAttempt);
+router.put('/attempt/:attemptId', completeAttempt);
+router.delete('/attempt/:attemptId', deleteAttempt);
+
+router.get("/questions/:questionId", getUserResponseToQuestion);
+router.post("/questions", uploadResponse);
+router.put("/questions/:questionId", modifyResponseToQuestion);
 
 export default router;

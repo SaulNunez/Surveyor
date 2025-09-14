@@ -21,8 +21,10 @@
   },
   "dependencies": {
     "@typegoose/typegoose": "^12.19.0",
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "mongoose": "^8.18.0",
+    "passport": "^0.7.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0"

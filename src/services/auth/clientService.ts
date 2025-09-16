@@ -2,7 +2,7 @@ import { ClientModel } from "../../models/auth/clientSchema";
 import { ClientInputDao } from "../../models/auth/dao/clientCreationModel";
 const crypto = require('crypto');
 
-export async function createClient(clientDao: ClientInputDao) {
+export async function createClient(clientDao: ClientInputDao, userId: string) {
     const clientId = generateRandomString(16);
     const clientSecret = generateSecureRandomString(32);
     
@@ -11,14 +11,15 @@ export async function createClient(clientDao: ClientInputDao) {
         clientDescription: clientDao.clientDescription,
         _id: clientId,
         clientSecret,
-        redirectUris: clientDao.redirectUris ?? []
+        redirectUris: clientDao.redirectUris ?? [],
+        user: userId
     });
     await client.save();
 
     return {
-        clientName: clientDao.clientName,
-        clientDescription: clientDao.clientDescription,
-        redirectUris: clientDao.redirectUris,
+        clientName: client.clientName,
+        clientDescription: client.clientDescription,
+        redirectUris: client.redirectUris,
         clientId: client._id,
         clientSecret
     };

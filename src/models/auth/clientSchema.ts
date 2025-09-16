@@ -1,4 +1,5 @@
-import { getModelForClass, pre, prop } from "@typegoose/typegoose";
+import { getModelForClass, pre, prop, Ref } from "@typegoose/typegoose";
+import { User } from "./userSchema";
 const bcrypt = require('bcryptjs');
 
 @pre<Client>('save', async function(next){
@@ -34,6 +35,9 @@ export class Client {
     @prop({ type: () => [String], required: true, default: [] })
     redirectUris!: string[];
     //grants!: string[];
+
+    @prop({ ref: () => User, required: true, type: () => String });
+    public user!: Ref<User, string>;
 }
 
 export const ClientModel = getModelForClass(Client);

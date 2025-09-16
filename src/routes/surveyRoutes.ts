@@ -1,7 +1,8 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { createSurveyForUser, deleteExistingSurvey, editExistingSurvey, getSurveyDetails } from '../controllers/surveyController';
 import { completeAttempt, createAttempt, deleteAttempt, getAttempt } from '../controllers/attemptController';
 import { getUserResponseToQuestion, modifyResponseToQuestion, uploadResponse } from '../controllers/questionControllers';
+const passport = require('../config/passport');
 
 const router: Router = Router();
 
@@ -30,7 +31,7 @@ const router: Router = Router();
  *     201:
  *       description: Created
  */
-router.post('/survey', createSurveyForUser);
+router.post('/survey', passport.authenticate('bearer', { session: false }), createSurveyForUser);
 
 /**
  * @swagger
@@ -46,10 +47,10 @@ router.post('/survey', createSurveyForUser);
  *       201:
  *         description: Deleted
  */
-router.delete('/survey/:surveyId', deleteExistingSurvey);
+router.delete('/survey/:surveyId', passport.authenticate('bearer', { session: false }), deleteExistingSurvey);
 
 router.get('/survey/:surveyId', getSurveyDetails);
-router.put('/survey/:surveyId', editExistingSurvey)
+router.put('/survey/:surveyId', passport.authenticate('bearer', { session: false }), editExistingSurvey)
 
 router.get('/attempt', getAttempt);
 router.post('/attempt', createAttempt);

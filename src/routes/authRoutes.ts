@@ -9,3 +9,5 @@ router.get("/v2/token", passport.authenticate(['oauth2-client-password'],
         session: false 
     }), 
         server.token(), server.errorHandler());
+
+export default router;

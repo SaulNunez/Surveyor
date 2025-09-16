@@ -9,7 +9,7 @@ export async function createClient(clientDao: ClientInputDao) {
     const client = new ClientModel({
         clientName: clientDao.clientName,
         clientDescription: clientDao.clientDescription,
-        clientId,
+        _id: clientId,
         clientSecret,
         redirectUris: clientDao.redirectUris ?? []
     });
@@ -19,10 +19,20 @@ export async function createClient(clientDao: ClientInputDao) {
         clientName: clientDao.clientName,
         clientDescription: clientDao.clientDescription,
         redirectUris: clientDao.redirectUris,
-        clientId,
+        clientId: client._id,
         clientSecret
     };
 }
+
+export async function getClientById(clientId: string) {
+    try {
+        const clientInfo = await ClientModel.findById(clientId).exec();
+        return clientInfo;
+    } catch (err) {
+        throw err;
+    }
+}
+    
 
 function generateRandomString(lenght : number) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -19,14 +19,14 @@ if (!this.isModified("clientSecret")) return next();
 })
 
 export class Client {
+    @prop({ type: () => String, required: true, unique: true })
+    public _id!: string;
+
     @prop({ type: () => String, required: true })
     clientName!: string;
     
     @prop({ type: () => String, required: true })
     clientDescription!: string;
-    
-    @prop({ type: () => String, required: true, unique: true })
-    clientId!: string;
 
     @prop({ type: () => String})
     clientSecret!: string;

@@ -1,5 +1,6 @@
 import { getModelForClass, pre, prop } from "@typegoose/typegoose";
 const bcrypt = require('bcryptjs');
+import { v4 as uuidv4 } from 'uuid';
 
 @pre<User>('save', async function(next){
 if (!this.isModified("password")) return next();
@@ -19,6 +20,9 @@ if (!this.isModified("password")) return next();
 })
 
 export class User {
+    @prop({ required: true, default: () => uuidv4() })
+    public _id!: string;
+
     @prop({ type: () => String, required: true, unique: true })
     public email!: string;
 

@@ -1,10 +1,7 @@
-import { getClientById } from "../services/auth/clientService";
 import { getUserByEmail } from "../services/auth/userService";
 
 const passport = require('passport');
-const BasicStrategy = require('passport-http').BasicStrategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
-const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 /*
 passport.use(new BasicStrategy(
@@ -44,10 +41,11 @@ passport.use('client-basic', new BasicStrategy(
     }
 )); */
 
-passport.use(new BearerStrategy(async (token, cb) => {
+passport.use(new BearerStrategy(async (token : string, cb: (err: Error | null, user?: Object | boolean, info?: Object | null) => void) => {
     try {
         const decoded = await jwt.verify(token, process.env.TOKEN_SIGNING_KEY);
-        decoded.email ? cb(null, (await getUserByEmail(decoded.email)), { scope: 'all' }) : cb(null, false);
+        const user = await getUserByEmail(decoded.email);
+        decoded.email ? cb(null, user, { scope: 'all' }) : cb(null, false);
     } catch(err) {
         cb(null, false);
     }

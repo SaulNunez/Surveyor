@@ -3,13 +3,13 @@ import { RefreshTokenModel } from "../models/auth/tokensSchema";
 import { UserModel } from "../models/auth/userSchema";
 import { getClientById } from "../services/auth/clientService";
 import { getUserByEmail } from "../services/auth/userService";
+import oauth2orize from 'oauth2orize';
 
-const oauth2orize = require("oauth2orize");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const Client = require("../models/client");
 const passport = require("../config/passport");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 export const server = oauth2orize.createServer();
 
@@ -38,7 +38,7 @@ server.exchange(
                 { 
                     expiresIn: "1h",
                     audience: client.id,
-                    sub: user.id
+                    sub: user._id
                 }
             );
 
@@ -48,7 +48,7 @@ server.exchange(
                 { 
                     expiresIn: "90d",
                     audience: client,
-                    sub: user.id
+                    sub: user._id
                 }
             );
             const dbRefreshToken = new RefreshTokenModel({
@@ -60,7 +60,12 @@ server.exchange(
             await dbRefreshToken.save();
             done(null, accessToken, refreshToken);
         } catch (err) {
-            done(err);
+            if(err instanceof Error){
+                done(err);
+            } else
+            {
+                done(new Error(err?.toString()));
+            }
         }
     })
 );

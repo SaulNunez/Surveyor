@@ -2,9 +2,9 @@ import { RefreshTokenModel } from "../models/auth/tokensSchema";
 import { getClientById } from "../services/auth/clientService";
 import { getUserByEmail } from "../services/auth/userService";
 import oauth2orize from 'oauth2orize';
+import bcrypt from "bcrypt";
 
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 
 export const server = oauth2orize.createServer();
 

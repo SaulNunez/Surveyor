@@ -1,7 +1,7 @@
 import { getModelForClass, pre, prop, Ref } from "@typegoose/typegoose";
 import { User } from "./userSchema";
 import { Client } from "./clientSchema";
-const bcrypt = require('bcrypt');
+import bcrypt from "bcrypt";
 
 @pre<RefreshToken>('save', async function(next){
 if (!this.isModified("password")) return next();

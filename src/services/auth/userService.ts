@@ -17,7 +17,7 @@ export async function createUser({ email, password }: UserInputDao) {
 export async function getUserByEmail(email: string) {
     try {
         const user = await UserModel.findOne({ email }).exec();
-        return user;
+        return user?.toObject();
     } catch (err) {
         throw err;
     }

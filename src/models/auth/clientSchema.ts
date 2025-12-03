@@ -36,7 +36,7 @@ export class Client {
     redirectUris!: string[];
     //grants!: string[];
 
-    @prop({ ref: () => User, required: true, type: () => String });
+    @prop({ ref: () => User, required: true, type: () => String })
     public user!: Ref<User, string>;
 }
 

@@ -1,14 +1,9 @@
-import { ClientModel } from "../models/auth/clientSchema";
 import { RefreshTokenModel } from "../models/auth/tokensSchema";
-import { UserModel } from "../models/auth/userSchema";
 import { getClientById } from "../services/auth/clientService";
 import { getUserByEmail } from "../services/auth/userService";
 import oauth2orize from 'oauth2orize';
 
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const Client = require("../models/client");
-const passport = require("../config/passport");
 const bcrypt = require("bcrypt");
 
 export const server = oauth2orize.createServer();
